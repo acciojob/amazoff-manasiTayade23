@@ -14,6 +14,8 @@ HashMap<String, Order> orderDB = new HashMap<>();
 
         HashMap<String, String> Assigned = new HashMap<>();
 
+
+
     public void addOrder(Order order){
         String id = order.getId();
         orderDB.put(id,order);
@@ -24,7 +26,7 @@ HashMap<String, Order> orderDB = new HashMap<>();
         deliveryPartnerDB.put(id,deliveryPartner);
     }
 
-    public void assignOrderToPartner(String orderId, String partnerId){
+    public void addOrderPartnerPair(String orderId, String partnerId){
         List<String> list = deliveryPartnerOrderHashMap.getOrDefault(partnerId,new ArrayList<>());
         list.add(orderId);
         deliveryPartnerOrderHashMap.put(partnerId,list);
@@ -33,8 +35,8 @@ HashMap<String, Order> orderDB = new HashMap<>();
         deliveryPartner.setNumberOfOrders(list.size());
     }
 
-    public Order getOrder(String id){
-        for(String s: orderDB.keySet())
+    public Order getOrderById(String id){
+        for(String s:orderDB.keySet())
         {
             if(s.equals(id))
             {
@@ -44,22 +46,22 @@ HashMap<String, Order> orderDB = new HashMap<>();
         return null;
     }
 
-    public DeliveryPartner getPartner(String id){
+    public DeliveryPartner getPartnerById(String id){
         if (deliveryPartnerDB.containsKey(id)){
             return deliveryPartnerDB.get(id);
         }
         return null;
     }
 
-    public int getNoOfOrderAssignedToPartner(String partnerId){
+    public int getOrderCountByPartnerId(String partnerId){
         return deliveryPartnerOrderHashMap.getOrDefault(partnerId,new ArrayList<>()).size();
     }
 
-    public List<String> getListOfOrder(String partnerId){
+    public List<String> getOrdersByPartnerId(String partnerId){
         return deliveryPartnerOrderHashMap.getOrDefault(partnerId, new ArrayList<>());
     }
 
-    public List<String> getListOfAllOrder(){
+    public List<String> getAllOrders(){
         List<String> orders = new ArrayList<>();
         for (Map.Entry<String,Order> map: orderDB.entrySet()){
             orders.add(map.getKey());
@@ -67,11 +69,11 @@ HashMap<String, Order> orderDB = new HashMap<>();
         return orders;
     }
 
-    public int getOrderWhichAreNotAssigned(){
+    public int getCountOfUnassignedOrders(){
         return orderDB.size() - Assigned.size();
     }
 
-    public int orderLeftUndelivered(String time, String partnerId){
+    public int getOrdersLeftAfterGivenTimeByPartnerId(String time, String partnerId){
         int countOfOrders = 0;
         List<String> list = deliveryPartnerOrderHashMap.get(partnerId);
         int deliveryTime = Integer.parseInt(time.substring(0, 2)) * 60 + Integer.parseInt(time.substring(3));
@@ -84,7 +86,7 @@ HashMap<String, Order> orderDB = new HashMap<>();
         return countOfOrders;
     }
 
-    public String getLastDeliveryTime(String partnerId){
+    public String getLastDeliveryTimeByPartnerId(String partnerId){
         String time = "";
         List<String> list = deliveryPartnerOrderHashMap.get(partnerId);
         int deliveryTime = 0;
@@ -110,7 +112,7 @@ HashMap<String, Order> orderDB = new HashMap<>();
         return time;
     }
 
-    public void deleteDeliveryPartner(String partnerId){
+    public void deletePartnerById(String partnerId){
         deliveryPartnerDB.remove(partnerId);
         List<String> list = deliveryPartnerOrderHashMap.getOrDefault(partnerId, new ArrayList<>());
         ListIterator<String> itr = list.listIterator();
@@ -121,7 +123,7 @@ HashMap<String, Order> orderDB = new HashMap<>();
         deliveryPartnerOrderHashMap.remove(partnerId);
     }
 
-    public void deleteOrder(String orderId){
+    public void deleteOrderById(String orderId){
         orderDB.remove(orderId);
         String partnerId = Assigned.get(orderId);
         Assigned.remove(orderId);
